@@ -3,6 +3,8 @@ neovim的输入法自动切换插件，在写文档以及代码注释的时候�
 
 目前只支持fcitx和fcitx5
 
+功能演示：https://www.bilibili.com/video/BV1U94y1e7HS
+
 ### 依赖
 插件部分功能依赖[nvim-treesitter](nvim-treesitter/nvim-treesitter)
 
@@ -22,5 +24,4 @@ require("im-switch").setup({
     im = "fcitx5",
 })
 ```
-
 
