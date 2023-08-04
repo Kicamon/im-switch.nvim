@@ -1,9 +1,9 @@
 local M = {}
 
 function M.Switch(opts)
-	M.check = opts[opts.is].check
-	M.en = opts[opts.is].en
-	M.zh = opts[opts.is].zh
+	M.check = opts[opts.im].check
+	M.en = opts[opts.im].en
+	M.zh = opts[opts.im].zh
 	M.text = opts.ft_text
 	M.code = opts.ft_code
 

@@ -1,7 +1,7 @@
 local opt = {}
 
 opt = {
-	is = "fcitx5",
+	im = "fcitx5",
 	ft_text = {
 		"*.md",
 		"*.txt",
