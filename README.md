@@ -6,7 +6,7 @@ neovim的输入法自动切换插件，在写文档以及代码注释的时候�
 功能演示：https://www.bilibili.com/video/BV1U94y1e7HS
 
 ### 依赖
-插件部分功能依赖[nvim-treesitter](nvim-treesitter/nvim-treesitter)
+插件部分功能依赖[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 
 ### 安装
 `Lazy.nvim`
@@ -34,6 +34,7 @@ require("im-switch").setup({
 		"*.lua",
 		"*.c",
 		"*.cpp",
+		"*.py",
 	},
 	fcitx5 = {
 		en = "fcitx5-remote -c",
