@@ -14,14 +14,26 @@ neovim的输入法自动切换插件，在写文档以及代码注释的时候�
 {
     "Kicamon/im-switch.nvim",
 }
-end
 ```
 
 ### 配置
 #### 默认配置
 ```lua
 require("im-switch").setup({
-    im = "fcitx5",
+	im = "fcitx5",
+	ft_text = { -- 自动切换输入法的文档
+		"*.md",
+		"*.txt",
+	},
+	ft_code = { -- 注释时自动切换输入法的语言
+		"*.lua",
+		"*.c",
+		"*.cpp",
+	},
+	fcitx5 = {
+		en = "fcitx5-remote -c",
+		zh = "fcitx5-remote -o",
+		check = "fcitx5-remote",
+	},
 })
 ```
-
