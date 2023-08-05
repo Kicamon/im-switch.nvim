@@ -13,6 +13,11 @@ neovim的输入法自动切换插件，在写文档以及代码注释的时候�
 ```lua
 {
     "Kicamon/im-switch.nvim",
+    lazy = true,
+    event = { "InsertEnter" },
+    config = function()
+        require("im-switch").setup()
+    end
 }
 ```
 
