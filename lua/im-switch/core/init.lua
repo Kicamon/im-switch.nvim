@@ -10,7 +10,7 @@ local function En()
 	end
 end
 
-function Zh()--这里用local的话会存在一些问题，作者技术力太差还没想到怎么解决
+local function Zh()
 	local input_status = tonumber(io.popen(M.check):read("*all"))
 	if (input_status ~= 2 and input_toggle == 1) then
 		os.execute(M.zh)
@@ -18,31 +18,28 @@ function Zh()--这里用local的话会存在一些问题，作者技术力太差
 	end
 end
 
-local function is_cursor_in_comment()
-	local ts_utils = require('nvim-treesitter.ts_utils')
+local ts_utils = require('nvim-treesitter.ts_utils')
 
-	--local current_node = ts_utils.get_node_at_cursor()
+local function is_cursor_in_comment()
 	local current_pos = vim.fn.getcurpos()
 	current_pos[3] = current_pos[3] - 1
 	vim.fn.setpos('.', current_pos)
 	local previous_node = ts_utils.get_node_at_cursor()
 
-	--vim.notify(current_node:type())
-
 	return (previous_node and previous_node:type() == 'comment')
 end
 
-local function is_in_code_block() --markdown
-	local ts_utils = require('nvim-treesitter.ts_utils')
-	local current_node = ts_utils.get_node_at_cursor()
-	while current_node do
-		if current_node:type() == 'fenced_code_block' then
-			return false
-		end
-		current_node = current_node:parent()
-	end
-	return true
-end
+--local function is_in_code_block() --markdown
+--local ts_utils = require('nvim-treesitter.ts_utils')
+--local current_node = ts_utils.get_node_at_cursor()
+--while current_node do
+--if current_node:type() == 'fenced_code_block' then
+--return false
+--end
+--current_node = current_node:parent()
+--end
+--return true
+--end
 
 local function change_cursor_in_comment()
 	if is_cursor_in_comment() then
@@ -73,9 +70,9 @@ function M.Switch(opts)
 		pattern = M.text,
 		callback = function()
 			--if (vim.bo.filetype == 'markdown') then
-				--if is_in_code_block() then
-					--Zh()
-				--end
+			--if is_in_code_block() then
+			--Zh()
+			--end
 			--end
 			Zh()
 		end
@@ -87,10 +84,25 @@ function M.Switch(opts)
 		end
 	})
 
-	vim.cmd("autocmd InsertCharPre *.lua if v:char == '-' && getline('.')[col('.')-2]=='-' | call EnterComment() | endif")
-	vim.cmd(
-		"autocmd InsertCharPre *.c,*.cpp,*.java,*.js,*.go if v:char == '/' && getline('.')[col('.')-2]=='/' | call EnterComment() | endif")
-	vim.cmd("autocmd InsertCharPre *.py,*.sh,*.zsh if line('.') != 1 && v:char == '#' | call EnterComment() | endif")
+	vim.api.nvim_create_autocmd("TextChangedI", {
+		pattern = M.code,
+		callback = function()
+			if (vim.bo.filetype == 'python' or vim.bo.filetype == 'sh') and vim.fn.line('.') == 1 then
+				return
+			end
+			local current_pos = vim.fn.getcurpos()
+			current_pos[3] = current_pos[3] - 1
+			vim.fn.setpos('.', current_pos)
+			local previous_node = ts_utils.get_node_at_cursor()
+			vim.fn.setpos('.', current_pos)
+			if previous_node and previous_node:type() == 'comment' then
+				Zh()
+			end
+			current_pos[3] = current_pos[3] + 1
+			previous_node = ts_utils.get_node_at_cursor()
+			vim.fn.setpos('.', current_pos)
+		end
+	})
 end
 
 return M

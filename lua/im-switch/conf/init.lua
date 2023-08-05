@@ -10,6 +10,7 @@ opt = {
 		"*.lua",
 		"*.c",
 		"*.cpp",
+		"*.py",
 	},
 	fcitx5 = {
 		en = "fcitx5-remote -c",
