@@ -20,23 +20,27 @@ end
 
 local ts_utils = require('nvim-treesitter.ts_utils')
 
---local function is_in_code_block() --markdown
---local ts_utils = require('nvim-treesitter.ts_utils')
---local current_node = ts_utils.get_node_at_cursor()
---while current_node do
---if current_node:type() == 'fenced_code_block' then
---return false
---end
---current_node = current_node:parent()
---end
---return true
---end
+local function is_not_in_code_block() --markdown
+  local node_cursor = ts_utils.get_node_at_cursor()
+  if node_cursor and (node_cursor:type() == 'language' or node_cursor:type() == 'fenced_code_block_delimiter') then
+    return false
+  end
+  while node_cursor do
+    if node_cursor:type() == "chunk" then
+      return false
+    end
+    node_cursor = node_cursor:parent()
+  end
+  return true
+end
 
-vim.cmd([[
-	function! EnterComment()
-		lua Zh()
-	endfunction
-]])
+local function filetype_checke()
+  if vim.bo.filetype == 'markdown' then
+    return is_not_in_code_block()
+  else
+    return true
+  end
+end
 
 function M.Switch(opts)
   M.check = opts[opts.im].check
@@ -54,12 +58,9 @@ function M.Switch(opts)
   vim.api.nvim_create_autocmd("InsertEnter", {
     pattern = M.text,
     callback = function()
-      --if (vim.bo.filetype == 'markdown') then
-      --if is_in_code_block() then
-      --Zh()
-      --end
-      --end
-      Zh()
+      if filetype_checke() then
+        Zh()
+      end
     end
   })
   vim.api.nvim_create_autocmd("InsertEnter", {
@@ -86,12 +87,10 @@ function M.Switch(opts)
       current_pos[3] = current_pos[3] - 1
       vim.fn.setpos('.', current_pos)
       local previous_node = ts_utils.get_node_at_cursor()
-      vim.fn.setpos('.', current_pos)
       if previous_node and previous_node:type() == 'comment' then
         Zh()
       end
       current_pos[3] = current_pos[3] + 1
-      previous_node = ts_utils.get_node_at_cursor()
       vim.fn.setpos('.', current_pos)
     end
   })

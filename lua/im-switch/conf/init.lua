@@ -21,7 +21,7 @@ opt = {
 		en = "fcitx-remote -c",
 		zh = "fcitx-remote -o",
 		check = "fcitx-remote",
-	}
+	},
 }
 
 return opt
