@@ -20,14 +20,27 @@ end
 
 local ts_utils = require('nvim-treesitter.ts_utils')
 
+local md = {
+  "language",
+  "fenced_code_block_delimiter",
+  "link_destination",
+}
+
 local function is_not_in_code_block() --markdown
   local node_cursor = ts_utils.get_node_at_cursor()
-  if node_cursor and (node_cursor:type() == 'language' or node_cursor:type() == 'fenced_code_block_delimiter') then
-    return false
+  for _, node_type in ipairs(md) do
+    if node_cursor and node_cursor:type() == node_type then
+      return false
+    end
   end
   while node_cursor do
     if node_cursor:type() == "chunk" then
-      return false
+      local current_pos = vim.fn.getcurpos()
+      current_pos[3] = current_pos[3] - 1
+      vim.fn.setpos('.', current_pos)
+      local previous_node = ts_utils.get_node_at_cursor()
+      return previous_node and previous_node:type() == 'comment'
+      --return false
     end
     node_cursor = node_cursor:parent()
   end
