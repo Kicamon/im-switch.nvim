@@ -28,6 +28,12 @@ local md = {
   "fenced_code_block",
 }
 
+local md_code = {
+  "chunk",            --lua
+  "translation_unit", --c/cpp
+  "module",           --python
+}
+
 local function is_not_in_code_block() --markdown
   local node_cursor = ts_utils.get_node_at_cursor()
   for _, node_type in ipairs(md) do
@@ -36,14 +42,16 @@ local function is_not_in_code_block() --markdown
     end
   end
   while node_cursor do
-    if node_cursor:type() == "chunk" then
-      local current_pos = vim.fn.getcurpos()
-      current_pos[3] = current_pos[3] - 1
-      vim.fn.setpos('.', current_pos)
-      local previous_node = ts_utils.get_node_at_cursor()
-      return previous_node and previous_node:type() == 'comment'
-      --return false
+    for _, node_type in ipairs(md_code) do
+      if node_cursor and node_cursor:type() == node_type then
+        return false
+      end
     end
+      --local current_pos = vim.fn.getcurpos()
+      --current_pos[3] = current_pos[3] - 1
+      --vim.fn.setpos('.', current_pos)
+      --local previous_node = ts_utils.get_node_at_cursor()
+      --return previous_node and previous_node:type() == 'comment'
     node_cursor = node_cursor:parent()
   end
   return true
