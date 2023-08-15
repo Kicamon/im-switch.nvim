@@ -24,6 +24,8 @@ local md = {
   "language",
   "fenced_code_block_delimiter",
   "link_destination",
+  "code_fence_content",
+  "fenced_code_block",
 }
 
 local function is_not_in_code_block() --markdown
