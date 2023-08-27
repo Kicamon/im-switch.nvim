@@ -26,6 +26,7 @@ local md = {
   "link_destination",
   "code_fence_content",
   "fenced_code_block",
+  "latex_block",
 }
 
 local md_code = {
@@ -47,11 +48,11 @@ local function is_not_in_code_block() --markdown
         return false
       end
     end
-      --local current_pos = vim.fn.getcurpos()
-      --current_pos[3] = current_pos[3] - 1
-      --vim.fn.setpos('.', current_pos)
-      --local previous_node = ts_utils.get_node_at_cursor()
-      --return previous_node and previous_node:type() == 'comment'
+    --local current_pos = vim.fn.getcurpos()
+    --current_pos[3] = current_pos[3] - 1
+    --vim.fn.setpos('.', current_pos)
+    --local previous_node = ts_utils.get_node_at_cursor()
+    --return previous_node and previous_node:type() == 'comment'
     node_cursor = node_cursor:parent()
   end
   return true

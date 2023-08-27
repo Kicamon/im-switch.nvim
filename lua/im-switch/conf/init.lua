@@ -7,10 +7,7 @@ opt = {
 		"*.txt",
 	},
 	ft_code = {
-		"*.lua",
-		"*.c",
-		"*.cpp",
-		"*.py",
+    "*",
 	},
 	fcitx5 = {
 		en = "fcitx5-remote -c",
