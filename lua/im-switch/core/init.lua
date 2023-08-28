@@ -95,7 +95,7 @@ function M.Switch(opts)
       vim.fn.setpos('.', current_pos)
       local previous_node = ts_utils.get_node_at_cursor()
 
-      if previous_node and previous_node:type() == 'comment' then
+      if previous_node and (previous_node:type() == 'comment' or previous_node:type() == 'comment_content') then
         Zh()
       end
     end
@@ -111,7 +111,7 @@ function M.Switch(opts)
       current_pos[3] = current_pos[3] - 1
       vim.fn.setpos('.', current_pos)
       local previous_node = ts_utils.get_node_at_cursor()
-      if previous_node and previous_node:type() == 'comment' then
+      if previous_node and (previous_node:type() == 'comment' or previous_node:type() == 'comment_content') then
         Zh()
       end
       current_pos[3] = current_pos[3] + 1
