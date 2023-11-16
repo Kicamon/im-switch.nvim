@@ -1,7 +1,7 @@
 # im-switch.nvim
 neovim的输入法自动切换插件，在写文档以及代码注释的时候可以自动帮忙切换输入法
 
-目前只支持fcitx和fcitx5
+目前只支持fcitx5
 
 功能演示：https://www.bilibili.com/video/BV1U94y1e7HS
 
@@ -23,36 +23,30 @@ neovim的输入法自动切换插件，在写文档以及代码注释的时候�
 #### 默认配置
 ```lua
 require("im-switch").setup({
-	im = "fcitx5",
-	ft_text = { -- 自动切换输入法的文档
-		"*.md",
-		"*.txt",
-	},
-	ft_code = { -- 注释时自动切换输入法的语言
-		"*.lua",
-		"*.c",
-		"*.cpp",
-		"*.py",
-	},
-	fcitx5 = {
-		en = "fcitx5-remote -c",
-		zh = "fcitx5-remote -o",
-		check = "fcitx5-remote",
-	},
+    text = { -- 自动切换输入法的文档
+        "*.md",
+        "*.txt",
+    },
+    code = { -- 注释时自动切换输入法的语言
+        "*.lua",
+        "*.c",
+        "*.cpp",
+        "*.py",
+    },
+    en = "fcitx5-remote -c",
+    zh = "fcitx5-remote -o",
+    check = "fcitx5-remote",
 })
 ```
 
 #### 其他输入法
-如果你使用的输入法没有被支持，可以这么配置
+如果你使用的输入法没有被支持，可以这么配置，如fcitx
 ```lua
 require("im-switch").setup({
-	im = "myim",--这里写输入法名称
-	myim = {
-		en = "",
-		zh = "",
-		check = "",
-        --这里写上相应的输入法切换命令即可
-	},
+    en = "fcitx-remote -c",
+    zh = "fcitx-remote -o",
+    check = "fcitx-remote",
+    --这里写上相应的输入法切换命令即可
 })
 ```
 
