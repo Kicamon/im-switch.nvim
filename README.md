@@ -54,3 +54,5 @@ require("im-switch").setup({
 - [x] 所有nvim-treesitter支持的编程语言
 - [x] markdown及其代码块
 - [ ] tex
+
+### License MIT
