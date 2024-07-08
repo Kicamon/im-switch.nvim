@@ -7,14 +7,14 @@ local function En()
   local input_status = tonumber(io.popen(switch.check):read("*all"))
   if (input_status == 2) then
     input_toggle = 1
-    os.execute(switch.en)
+    vim.fn.system(switch.en)
   end
 end
 
 local function Zh()
   local input_status = tonumber(io.popen(switch.check):read("*all"))
   if (input_status ~= 2 and input_toggle == 1) then
-    os.execute(switch.zh)
+    vim.fn.system(switch.zh)
     input_toggle = 0
   end
 end
