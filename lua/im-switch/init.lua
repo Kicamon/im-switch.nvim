@@ -87,6 +87,10 @@ local function setup(opt)
     au('InsertEnter', {
       pattern = switch.code.files,
       callback = function()
+        if (vim.bo.filetype == 'python' or vim.bo.filetype == 'sh') and vim.fn.line('.') == 1 then
+          return
+        end
+
         local current_pos = vim.fn.getcurpos()
         current_pos[3] = current_pos[3] - 1
         vim.fn.setpos('.', current_pos)
@@ -102,12 +106,15 @@ local function setup(opt)
         if (vim.bo.filetype == 'python' or vim.bo.filetype == 'sh') and vim.fn.line('.') == 1 then
           return
         end
+
         local current_pos = vim.fn.getcurpos()
         current_pos[3] = current_pos[3] - 1
         vim.fn.setpos('.', current_pos)
+
         if check_comment() then
           Zh()
         end
+
         current_pos[3] = current_pos[3] + 1
         vim.fn.setpos('.', current_pos)
       end,
