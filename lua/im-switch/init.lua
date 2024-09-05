@@ -71,42 +71,48 @@ local function setup(opt)
       En()
     end,
   })
-  au('InsertEnter', {
-    pattern = switch.text.files,
-    callback = function()
-      if switch.text.enable and filetype_checke() then
-        Zh()
-      end
-    end,
-  })
-  au('InsertEnter', {
-    pattern = switch.code.files,
-    callback = function()
-      local current_pos = vim.fn.getcurpos()
-      current_pos[3] = current_pos[3] - 1
-      vim.fn.setpos('.', current_pos)
 
-      if switch.code.enable and check_comment() then
-        Zh()
-      end
-    end,
-  })
-  au('TextChangedI', {
-    pattern = switch.code.files,
-    callback = function()
-      if (vim.bo.filetype == 'python' or vim.bo.filetype == 'sh') and vim.fn.line('.') == 1 then
-        return
-      end
-      local current_pos = vim.fn.getcurpos()
-      current_pos[3] = current_pos[3] - 1
-      vim.fn.setpos('.', current_pos)
-      if switch.code.enable and check_comment() then
-        Zh()
-      end
-      current_pos[3] = current_pos[3] + 1
-      vim.fn.setpos('.', current_pos)
-    end,
-  })
+  if switch.text.enable then
+    au('InsertEnter', {
+      pattern = switch.text.files,
+      callback = function()
+        if switch.text.enable and filetype_checke() then
+          Zh()
+        end
+      end,
+    })
+  end
+
+  if switch.code.enable then
+    au('InsertEnter', {
+      pattern = switch.code.files,
+      callback = function()
+        local current_pos = vim.fn.getcurpos()
+        current_pos[3] = current_pos[3] - 1
+        vim.fn.setpos('.', current_pos)
+
+        if check_comment() then
+          Zh()
+        end
+      end,
+    })
+    au('TextChangedI', {
+      pattern = switch.code.files,
+      callback = function()
+        if (vim.bo.filetype == 'python' or vim.bo.filetype == 'sh') and vim.fn.line('.') == 1 then
+          return
+        end
+        local current_pos = vim.fn.getcurpos()
+        current_pos[3] = current_pos[3] - 1
+        vim.fn.setpos('.', current_pos)
+        if check_comment() then
+          Zh()
+        end
+        current_pos[3] = current_pos[3] + 1
+        vim.fn.setpos('.', current_pos)
+      end,
+    })
+  end
 end
 
 return { setup = setup }
