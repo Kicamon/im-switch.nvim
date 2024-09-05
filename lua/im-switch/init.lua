@@ -76,7 +76,7 @@ local function setup(opt)
     au('InsertEnter', {
       pattern = switch.text.files,
       callback = function()
-        if switch.text.enable and filetype_checke() then
+        if filetype_checke() then
           Zh()
         end
       end,
