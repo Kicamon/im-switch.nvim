@@ -1,21 +1,36 @@
-local switch = {}
+local au = vim.api.nvim_create_autocmd
 
-local input_toggle = 1
-local ts_utils = require('nvim-treesitter.ts_utils')
+local switch = {
+  input_toggle = 1,
+  text = {
+    enable = true,
+    files = {
+      '*.md',
+      '*.txt',
+    },
+  },
+  code = {
+    enable = true,
+    files = { '*' },
+  },
+  en = 'fcitx5-remote -c',
+  zh = 'fcitx5-remote -o',
+  check = 'fcitx5-remote',
+}
 
 local function En()
   local input_status = tonumber(io.popen(switch.check):read('*all'))
   if input_status == 2 then
-    input_toggle = 1
+    switch.input_toggle = 1
     vim.fn.system(switch.en)
   end
 end
 
 local function Zh()
   local input_status = tonumber(io.popen(switch.check):read('*all'))
-  if input_status ~= 2 and input_toggle == 1 then
+  if input_status ~= 2 and switch.input_toggle == 1 then
     vim.fn.system(switch.zh)
-    input_toggle = 0
+    switch.input_toggle = 0
   end
 end
 
@@ -37,53 +52,47 @@ local function filetype_checke()
   end
 end
 
-local function setup(opt)
-  switch = vim.tbl_deep_extend('force', {
-    text = {
-      '*.md',
-      '*.txt',
-    },
-    code = {
-      '*',
-    },
-    en = 'fcitx5-remote -c',
-    zh = 'fcitx5-remote -o',
-    check = 'fcitx5-remote',
-  }, opt or {})
+local function check_comment()
+  local node_cursor = vim.treesitter.get_captures_at_cursor(0)
+  for _, v in pairs(node_cursor) do
+    if string.find(v, 'comment') then
+      return true
+    end
+  end
+  return false
+end
 
-  vim.api.nvim_create_autocmd('InsertLeave', {
+local function setup(opt)
+  switch = vim.tbl_deep_extend('force', switch, opt or {})
+
+  au('InsertLeave', {
     pattern = '*',
     callback = function()
       En()
     end,
   })
-  vim.api.nvim_create_autocmd('InsertEnter', {
-    pattern = switch.text,
+  au('InsertEnter', {
+    pattern = switch.text.files,
     callback = function()
-      if filetype_checke() then
+      if switch.text.enable and filetype_checke() then
         Zh()
       end
     end,
   })
-  vim.api.nvim_create_autocmd('InsertEnter', {
-    pattern = switch.code,
+  au('InsertEnter', {
+    pattern = switch.code.files,
     callback = function()
       local current_pos = vim.fn.getcurpos()
       current_pos[3] = current_pos[3] - 1
       vim.fn.setpos('.', current_pos)
-      local previous_node = ts_utils.get_node_at_cursor()
 
-      if
-        previous_node
-        and (previous_node:type() == 'comment' or previous_node:type() == 'comment_content')
-      then
+      if switch.code.enable and check_comment() then
         Zh()
       end
     end,
   })
-
-  vim.api.nvim_create_autocmd('TextChangedI', {
-    pattern = switch.code,
+  au('TextChangedI', {
+    pattern = switch.code.files,
     callback = function()
       if (vim.bo.filetype == 'python' or vim.bo.filetype == 'sh') and vim.fn.line('.') == 1 then
         return
@@ -91,11 +100,7 @@ local function setup(opt)
       local current_pos = vim.fn.getcurpos()
       current_pos[3] = current_pos[3] - 1
       vim.fn.setpos('.', current_pos)
-      local previous_node = ts_utils.get_node_at_cursor()
-      if
-        previous_node
-        and (previous_node:type() == 'comment' or previous_node:type() == 'comment_content')
-      then
+      if switch.code.enable and check_comment() then
         Zh()
       end
       current_pos[3] = current_pos[3] + 1
@@ -104,6 +109,4 @@ local function setup(opt)
   })
 end
 
-return {
-  setup = setup,
-}
+return { setup = setup }
