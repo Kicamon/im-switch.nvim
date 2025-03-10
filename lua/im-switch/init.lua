@@ -55,7 +55,7 @@ end
 local function check_comment()
   local node_cursor = vim.treesitter.get_captures_at_cursor(0)
   for _, v in pairs(node_cursor) do
-    if string.find(v, 'comment') then
+    if string.find(v, 'comment') or string.find(v, 'documentation') then
       return true
     end
   end
